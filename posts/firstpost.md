@@ -16,4 +16,4 @@ This is my website, pretty simple. As of writing, there isn't much here, but I w
   
 - [ ] Add knowledgebase
   
-- [ ] Add guides
+- [x] Add guides
