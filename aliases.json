@@ -21,5 +21,10 @@
     "title": "Modding API",
     "excerpt": "Captivity's unofficial Modding API",
     "pinned": true
+  },
+  "contact.md": {
+    "title": "Contact Me",
+    "excerpt": "It's just my Discord",
+    "pinned": true
   }
 }
