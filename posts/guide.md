@@ -1,10 +1,8 @@
----
-
+```yaml
 title: Captivity Guide
 date: Jan 5, 2026
 excerpt: The definitive guide to installing mods without breaking your game.
-
----
+```
 
 ## 🛠 Choose Your Mod Type
 
@@ -53,7 +51,9 @@ Drag your **modded** file into this location:
 
 **Step 1: Prerequisites**
 You need the mod loader framework.
+
 [BepInEx 5.x (x64)](https://github.com/BepInEx/BepInEx/releases)
+
 1. Download BepInEx above.
 2. Extract the zip into your main game folder (where `Captivity.exe` is).
 3. **Run the game once** to create the necessary folders, then close it.
