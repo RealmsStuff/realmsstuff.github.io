@@ -1,1 +1,1 @@
-[Click to Download Plugin](Assembly-CSharp.dll)
+[Click to Download Plugin](vanilla/Assembly-CSharp.dll)
