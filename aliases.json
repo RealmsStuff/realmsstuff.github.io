@@ -9,7 +9,8 @@
   },
   "guide.md": { 
     "title": "Captivity Guide", 
-    "excerpt": "The definitive guide to installing mods without breaking your game." 
+    "excerpt": "The definitive guide to installing mods without breaking your game." ,
+    pinned: true
   },
   "vanilla.md": { 
     "title": "Vanilla Captivity", 
