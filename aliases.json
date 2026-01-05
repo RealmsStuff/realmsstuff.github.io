@@ -19,6 +19,7 @@
   },
   "bepinex/XGame Modding.dll": {
     "title": "Modding API",
-    "excerpt": "Captivity's unofficial Modding API"
+    "excerpt": "Captivity's unofficial Modding API",
+    "pinned": true
   }
 }
