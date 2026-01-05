@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Captivity Modding</title>
+    <title>Captivity Modding Hub</title>
     
     <!-- Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <!-- Syntax Highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     
     <style>
@@ -30,84 +29,64 @@
             color: var(--text-main);
             margin: 0;
             line-height: 1.6;
-            background-image: 
-                radial-gradient(circle at 0% 0%, #1a1a2e 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, #161021 0%, transparent 40%);
+            background-image: radial-gradient(circle at 0% 0%, #1a1a2e 0%, transparent 40%), radial-gradient(circle at 100% 100%, #161021 0%, transparent 40%);
             background-attachment: fixed;
+            min-height: 100vh;
         }
 
         .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
 
-        /* --- Navigation --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 60px;
-        }
+        nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; cursor: pointer; }
         .logo span { color: var(--accent); }
         .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 20px; font-size: 0.9rem; transition: 0.2s; }
-        .nav-links a:hover { color: var(--accent); }
 
-        /* --- Post Grid --- */
-        .post-grid { display: grid; gap: 25px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab-btn {
+            background: none; border: none; color: var(--text-muted); font-family: inherit;
+            font-size: 1rem; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: 0.2s;
+        }
+        .tab-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .tab-btn.active { color: var(--accent); background: var(--accent-glow); }
+
+        .post-grid { display: grid; gap: 15px; }
         .post-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-card); border: 1px solid var(--border); padding: 20px;
+            border-radius: 16px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 20px;
         }
-        .post-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        .post-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent-glow); }
+        .file-icon {
+            font-size: 1.5rem; color: var(--accent); background: rgba(167, 139, 250, 0.1);
+            width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;
         }
-        .post-meta { font-size: 0.8rem; color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: 10px; display: block; }
-        .post-card h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
-        .post-card p { color: var(--text-muted); margin: 0; }
+        .post-info { flex-grow: 1; }
+        .post-meta { font-size: 0.7rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .path-badge { background: #2d2d39; color: var(--text-muted); padding: 2px 8px; border-radius: 4px; text-transform: none; font-weight: 400; }
+        .post-card h2 { margin: 2px 0; font-size: 1.1rem; }
+        .post-card p { color: var(--text-muted); margin: 0; font-size: 0.85rem; }
 
-        /* --- Post Reader (Markdown View) --- */
         #reader { display: none; animation: fadeIn 0.4s ease; }
         .back-btn {
-            background: none; border: 1px solid var(--border); color: var(--text-muted);
-            padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 30px;
-            transition: 0.2s;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main);
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 30px;
+            transition: 0.2s; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
+            text-decoration: none;
         }
-        .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .back-btn:hover { background: var(--accent); color: #000; }
 
-        /* Markdown Styling */
-        .md-content h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .md-content h2 { color: var(--accent); margin-top: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .md-content p { color: #cbd5e1; font-size: 1.1rem; }
-        
-        /* Code Styling */
-        pre[class*="language-"] {
-            border-radius: 12px;
-            margin: 25px 0;
-            border: 1px solid var(--border) !important;
-            background: var(--code-bg) !important;
+        .embedded-download {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: linear-gradient(135deg, #2d2d39, #1a1a24); border: 1px solid var(--border);
+            padding: 12px 20px; border-radius: 10px; color: var(--text-main) !important;
+            text-decoration: none !important; font-weight: 600; margin: 15px 0;
+            transition: 0.2s; border-left: 4px solid var(--accent);
         }
-        code { font-family: 'Fira Code', monospace !important; }
+        .embedded-download:hover { background: var(--accent); color: #000 !important; }
 
-        /* Custom "File Tree" Component for MD */
-        .file-tree {
-            background: #000;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            border-left: 3px solid var(--accent);
-            margin: 20px 0;
-        }
-
-        footer { text-align: center; margin-top: 100px; color: var(--text-muted); font-size: 0.8rem; }
-
+        .download-box { text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 24px; }
+        footer { text-align: center; margin-top: 80px; padding: 40px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Mobile */
-        @media (max-width: 600px) { h1 { font-size: 2rem; } }
     </style>
 </head>
 <body>
@@ -116,126 +95,209 @@
     <nav>
         <div class="logo" onclick="showFeed()">CAPTIVITY<span>// </span>HUB</div>
         <div class="nav-links">
-            <a href="#">Projects</a>
-            <a href="https://github.com/RealmsStuff">GitHub</a>
+            <a href="https://github.com/RealmsStuff" target="_blank">GitHub</a>
         </div>
     </nav>
 
-    <!-- FEED VIEW -->
     <div id="feed">
-        <header style="margin-bottom: 40px;">
-            <h1 style="font-size: 3rem; margin-bottom: 0;">Discovery Log</h1>
-            <p style="color: var(--text-muted);">Documenting every modding aspect of Captivity</p>
+        <header style="margin-bottom: 30px;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0; letter-spacing: -1px;">Discovery Log</h1>
         </header>
-        <div class="post-grid" id="post-list">
-            <!-- Posts injected here -->
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('guides')"><i class="fa-solid fa-book-open"></i> Posts</button>
+            <button class="tab-btn" onclick="switchTab('files')"><i class="fa-solid fa-download"></i> Files & Mods</button>
         </div>
+
+        <div id="loading-spinner" style="text-align: center; padding: 20px; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Synchronizing with GitHub...
+        </div>
+        <div class="post-grid" id="post-list"></div>
     </div>
 
-    <!-- READER VIEW -->
     <div id="reader">
-        <button class="back-btn" onclick="showFeed()"><i class="fa-solid fa-arrow-left"></i> Back to Feed</button>
+        <button class="back-btn" onclick="showFeed()"><i class="fa-solid fa-arrow-left"></i> Back</button>
         <div id="post-content" class="md-content"></div>
     </div>
 
-    <footer>
-        THE 2026 Captivity Hub. Powered by Markdown and Hormones.
-    </footer>
+    <footer>&copy; 2026 Captivity Hub.</footer>
 </div>
 
-<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
 
 <script>
     /* --- CONFIGURATION --- */
-    const GITHUB_USER = 'RealmsStuff'; // Change this!
-    const GITHUB_REPO = 'realmsstuff.github.io';     // Change this!
+    const GITHUB_USER = 'RealmsStuff'; 
+    const GITHUB_REPO = 'realmsstuff.github.io'; 
     const POSTS_DIR = 'posts';
+    const ALIAS_FILE = 'aliases.json'; // Name of your external JSON file
 
-    async function fetchPosts() {
+    const FILE_TYPES = {
+        md:     { icon: 'fa-file-lines', label: 'Post', isText: true },
+        dll:    { icon: 'fa-gears', label: 'Plugin', isText: false },
+        assets: { icon: 'fa-cube', label: 'Assets', isText: false },
+        json:   { icon: 'fa-code', label: 'Config', isText: true },
+        txt:    { icon: 'fa-align-left', label: 'Text', isText: true }
+    };
+
+    let allFiles = [];
+    let fileAliases = {}; // Loaded dynamically
+    let currentTab = 'guides';
+
+    // --- MARKDOWN RENDERER ---
+    const renderer = new marked.Renderer();
+    renderer.link = (href, title, text) => {
+        const ext = href.split('.').pop().toLowerCase();
+        const type = FILE_TYPES[ext];
+        if (type && !type.isText) {
+            const downloadUrl = href.startsWith('http') ? href : `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_DIR}/${href}`;
+            return `<a href="${downloadUrl}" class="embedded-download" target="_blank"><i class="fa-solid ${type.icon}"></i> <span>Download: <b>${text}</b></span></a>`;
+        }
+        return `<a href="${href}" target="_blank">${text}</a>`;
+    };
+    marked.setOptions({ renderer: renderer });
+
+    async function initialize() {
+        try {
+            // 1. Fetch the external Aliases JSON
+            const aliasRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${ALIAS_FILE}`);
+            if (aliasRes.ok) {
+                fileAliases = await aliasRes.json();
+            }
+
+            // 2. Fetch the recursive file tree
+            const treeRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/main?recursive=1`);
+            const data = await treeRes.json();
+            
+            allFiles = data.tree.filter(item => item.path.startsWith(POSTS_DIR + '/') && item.type === 'blob');
+            
+            allFiles = allFiles.map(file => {
+                const relativePath = file.path.replace(POSTS_DIR + '/', '');
+                return {
+                    ...file,
+                    relativePath: relativePath,
+                    name: relativePath.split('/').pop(),
+                    folder: relativePath.includes('/') ? relativePath.split('/').slice(0,-1).join('/') : '',
+                    download_url: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${file.path}`
+                };
+            });
+
+            renderContent();
+        } catch (e) { 
+            document.getElementById('loading-spinner').innerHTML = "Error initializing Hub."; 
+        }
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        renderContent();
+    }
+
+    async function renderContent() {
         const listElement = document.getElementById('post-list');
         const spinner = document.getElementById('loading-spinner');
-        
-        try {
-            // 1. Get list of files in /posts/ folder
-            const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_DIR}`);
-            const files = await response.json();
-            
-            // 2. Filter for only .md files
-            const mdFiles = files.filter(file => file.name.endsWith('.md'));
+        listElement.innerHTML = '';
+        spinner.style.display = 'block';
 
-            for (let file of mdFiles) {
-                // 3. Fetch the content of each file to get metadata (Title/Date)
-                const rawResponse = await fetch(file.download_url);
-                const text = await rawResponse.text();
-                const metadata = parseMetadata(text);
-                
-                // 4. Create the post card
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.onclick = () => loadPost(file.download_url, file.name);
-                card.innerHTML = `
-                    <span class="post-meta">${metadata.date || 'Recent'}</span>
-                    <h2>${metadata.title || file.name}</h2>
-                    <p>${metadata.excerpt || 'Click to read more...'}</p>
-                `;
-                listElement.appendChild(card);
+        const filtered = allFiles.filter(file => {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (currentTab === 'guides') return ext === 'md';
+            return ext !== 'md' && FILE_TYPES[ext];
+        });
+
+        for (let file of filtered) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            const type = FILE_TYPES[ext];
+            
+            let title = file.name;
+            let excerpt = `Format: .${ext} file`;
+
+            // Use Aliases from the fetched JSON
+            if (fileAliases[file.relativePath]) {
+                title = fileAliases[file.relativePath].title;
+                excerpt = fileAliases[file.relativePath].excerpt;
+            } 
+            else if (ext === 'md') {
+                try {
+                    const raw = await fetch(file.download_url);
+                    const text = await raw.text();
+                    const meta = parseMetadata(text);
+                    if (meta.title) title = meta.title;
+                    if (meta.excerpt) excerpt = meta.excerpt;
+                } catch(e) {}
             }
-            spinner.style.display = 'none';
-        } catch (error) {
-            spinner.innerText = "Error loading posts. Check GitHub config.";
-            console.error(error);
+
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            card.onclick = () => loadPost(file.download_url, file.name, ext, file.relativePath);
+            card.innerHTML = `
+                <div class="file-icon"><i class="fa-solid ${type.icon}"></i></div>
+                <div class="post-info">
+                    <span class="post-meta">
+                        ${type.label} 
+                        ${file.folder ? `<span class="path-badge">${file.folder}</span>` : ''}
+                    </span>
+                    <h2>${title}</h2>
+                    <p>${excerpt}</p>
+                </div>`;
+            listElement.appendChild(card);
         }
+        spinner.style.display = 'none';
     }
 
     function parseMetadata(text) {
         const meta = {};
         const match = text.match(/^---([\s\S]*?)---/);
         if (match) {
-            const lines = match[1].split('\n');
-            lines.forEach(line => {
+            match[1].split('\n').forEach(line => {
                 const [key, ...value] = line.split(':');
-                if (key && value) meta[key.trim()] = value.join(':').trim();
+                if (key && value.length) meta[key.trim()] = value.join(':').trim();
             });
         }
         return meta;
     }
 
-    async function loadPost(url, filename) {
+    async function loadPost(url, filename, ext, relativePath) {
         document.getElementById('feed').style.display = 'none';
         document.getElementById('reader').style.display = 'block';
-        document.getElementById('post-content').innerHTML = "Loading content...";
+        const contentArea = document.getElementById('post-content');
+        const type = FILE_TYPES[ext];
 
-        const response = await fetch(url);
-        let text = await response.text();
-        
-        // Remove the metadata (Frontmatter) from the display
-        text = text.replace(/^---[\s\S]*?---/, '');
-
-        document.getElementById('post-content').innerHTML = marked.parse(text);
-        Prism.highlightAll();
-        
-        window.location.hash = filename;
+        if (type.isText) {
+            const response = await fetch(url);
+            let text = await response.text();
+            if (ext === 'md') {
+                text = text.replace(/^---[\s\S]*?---/, '');
+                contentArea.innerHTML = marked.parse(text);
+            } else {
+                contentArea.innerHTML = `<h1>${filename}</h1><pre><code>${text}</code></pre>`;
+            }
+            Prism.highlightAll();
+        } else {
+            const displayTitle = fileAliases[relativePath] ? fileAliases[relativePath].title : filename;
+            contentArea.innerHTML = `
+                <div class="download-box">
+                    <i class="fa-solid ${type.icon}" style="font-size: 5rem; color: var(--accent); margin-bottom: 20px;"></i>
+                    <h1>${displayTitle}</h1>
+                    <p style="color:var(--text-muted)">Location: <code>${relativePath}</code></p>
+                    <a href="${url}" class="back-btn" style="background: var(--accent); color: #000; text-decoration: none;">
+                        <i class="fa-solid fa-download"></i> Download File
+                    </a>
+                </div>`;
+        }
         window.scrollTo(0,0);
     }
 
     function showFeed() {
         document.getElementById('feed').style.display = 'block';
         document.getElementById('reader').style.display = 'none';
-        window.location.hash = '';
+        window.scrollTo(0,0);
     }
 
-    // Initialize
-    fetchPosts();
-    
-    // Handle direct links
-    if(window.location.hash) {
-        const hash = window.location.hash.replace('#', '');
-        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_DIR}/${hash}`;
-        loadPost(rawUrl, hash);
-    }
+    initialize();
 </script>
 </body>
 </html>
