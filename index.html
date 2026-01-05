@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevLog // Code & Modding</title>
+    
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0b0b0f;
+            --bg-card: #16161d;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #a78bfa;
+            --accent-glow: rgba(167, 139, 250, 0.2);
+            --code-bg: #011627;
+            --border: #2d2d39;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 0% 0%, #1a1a2e 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, #161021 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; cursor: pointer; }
+        .logo span { color: var(--accent); }
+        .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 20px; font-size: 0.9rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- Post Grid --- */
+        .post-grid { display: grid; gap: 25px; }
+        .post-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px -10px var(--accent-glow);
+        }
+        .post-meta { font-size: 0.8rem; color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .post-card h2 { margin: 0 0 10px 0; font-size: 1.5rem; }
+        .post-card p { color: var(--text-muted); margin: 0; }
+
+        /* --- Post Reader (Markdown View) --- */
+        #reader { display: none; animation: fadeIn 0.4s ease; }
+        .back-btn {
+            background: none; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 30px;
+            transition: 0.2s;
+        }
+        .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* Markdown Styling */
+        .md-content h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .md-content h2 { color: var(--accent); margin-top: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .md-content p { color: #cbd5e1; font-size: 1.1rem; }
+        
+        /* Code Styling */
+        pre[class*="language-"] {
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 1px solid var(--border) !important;
+            background: var(--code-bg) !important;
+        }
+        code { font-family: 'Fira Code', monospace !important; }
+
+        /* Custom "File Tree" Component for MD */
+        .file-tree {
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            border-left: 3px solid var(--accent);
+            margin: 20px 0;
+        }
+
+        footer { text-align: center; margin-top: 100px; color: var(--text-muted); font-size: 0.8rem; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile */
+        @media (max-width: 600px) { h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <div class="logo" onclick="showFeed()">CODE<span>//</span>HUB</div>
+        <div class="nav-links">
+            <a href="#">Projects</a>
+            <a href="https://github.com/">GitHub</a>
+        </div>
+    </nav>
+
+    <!-- FEED VIEW -->
+    <div id="feed">
+        <header style="margin-bottom: 40px;">
+            <h1 style="font-size: 3rem; margin-bottom: 0;">DevLog</h1>
+            <p style="color: var(--text-muted);">Documenting game modding, reverse engineering, and tools.</p>
+        </header>
+        <div class="post-grid" id="post-list">
+            <!-- Posts injected here -->
+        </div>
+    </div>
+
+    <!-- READER VIEW -->
+    <div id="reader">
+        <button class="back-btn" onclick="showFeed()"><i class="fa-solid fa-arrow-left"></i> Back to Feed</button>
+        <div id="post-content" class="md-content"></div>
+    </div>
+
+    <footer>
+        &copy; 2026 Captivity Hub. Powered by Markdown and Hormones.
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+
+<script>
+    const posts = [
+        {
+            slug: 'bepinex-hooks-tutorial',
+            title: 'Mastering BepInEx: Custom Hooks',
+            date: 'Oct 24, 2023',
+            excerpt: 'Learn how to intercept game methods in Unity using HarmonyX and BepInEx.',
+            content: `
+# Mastering BepInEx: Custom Hooks
+
+In this guide, we'll look at how to use **Harmony** to hook into a Unity game's logic.
+
+## The Setup
+First, ensure your directory looks like this:
+
+<div class="file-tree">
+Project/ <br>
+├── Plugin.cs <br>
+├── Patch.cs <br>
+└── MyMod.csproj
+</div>
+
+## The Code
+Here is a basic prefix patch that changes a player's movement speed:
+
+\`\`\`csharp
+[HarmonyPatch(typeof(PlayerController), "GetMoveSpeed")]
+class MovementPatch {
+    static void Postfix(ref float __result) {
+        __result *= 2.0f;
+    }
+}
+\`\`\`
+
+## Why Postfix?
+By using a Postfix, we let the original code run first, then we modify the result before the game uses it.
+            `
+        },
+        {
+            slug: 'asset-extraction-guide',
+            title: 'Extracting Game Assets',
+            date: 'Oct 20, 2023',
+            excerpt: 'A deep dive into AssetStudio and UABE for texture replacement.',
+            content: `
+# Extracting Game Assets
+
+To modify textures, you need to reach into the \`.assets\` files.
+
+## Recommended Tools
+1. **AssetStudio**: Best for viewing models.
+2. **UABE**: Best for replacing files.
+
+> **Warning:** Always backup your 'Managed' folder before attempting to overwrite game assets!
+            `
+        }
+    ];
+
+    function init() {
+        const list = document.getElementById('post-list');
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            card.onclick = () => loadPost(post.slug);
+            card.innerHTML = \`
+                <span class="post-meta">\${post.date}</span>
+                <h2>\${post.title}</h2>
+                <p>\${post.excerpt}</p>
+            \`;
+            list.appendChild(card);
+        });
+
+        if(window.location.hash) {
+            const slug = window.location.hash.replace('#', '');
+            loadPost(slug);
+        }
+    }
+
+    function loadPost(slug) {
+        const post = posts.find(p => p.slug === slug);
+        if(!post) return;
+
+        document.getElementById('feed').style.display = 'none';
+        document.getElementById('reader').style.display = 'block';
+        
+        document.getElementById('post-content').innerHTML = marked.parse(post.content);
+        
+        Prism.highlightAll();
+        
+        window.location.hash = slug;
+        window.scrollTo(0,0);
+    }
+
+    function showFeed() {
+        document.getElementById('feed').style.display = 'block';
+        document.getElementById('reader').style.display = 'none';
+        window.location.hash = '';
+    }
+
+    init();
+</script>
+</body>
+</html>
