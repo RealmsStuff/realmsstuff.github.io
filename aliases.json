@@ -14,5 +14,9 @@
   "vanilla.md": { 
     "title": "Vanilla Captivity", 
     "excerpt": "The original game assembly." 
+  },
+  "bepinex/XGame Modding.dll": {
+    "title": "Modding API",
+    "excerpt": "Captivity's unofficial Modding API"
   }
 }
