@@ -1,7 +1,8 @@
 {
   "vanilla/Assembly-CSharp.dll": { 
     "title": "Vanilla Assembly", 
-    "excerpt": "Original core assembly for Captivity." 
+    "excerpt": "Original core assembly for Captivity.",
+    "pinned": true
   },
   "firstpost.md": { 
     "title": "Hello!", 
