@@ -1,9 +1,3 @@
-```yaml
-title: Captivity Guide
-date: Jan 5, 2026
-excerpt: The definitive guide to installing mods without breaking your game.
-```
-
 ## 🛠 Choose Your Mod Type
 
 ### 1. Assembly Mod (`.dll`)
