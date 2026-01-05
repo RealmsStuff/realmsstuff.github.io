@@ -149,94 +149,75 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
 
 <script>
-    const posts = [
-        {
-            slug: 'bepinex-hooks-tutorial',
-            title: 'Mastering BepInEx: Custom Hooks',
-            date: 'Oct 24, 2023',
-            excerpt: 'Learn how to intercept game methods in Unity using HarmonyX and BepInEx.',
-            content: `
-# Mastering BepInEx: Custom Hooks
+    /* --- CONFIGURATION --- */
+    const GITHUB_USER = 'YOUR_GITHUB_USERNAME'; // Change this!
+    const GITHUB_REPO = 'YOUR_REPO_NAME';     // Change this!
+    const POSTS_DIR = 'posts';
 
-In this guide, we'll look at how to use **Harmony** to hook into a Unity game's logic.
+    async function fetchPosts() {
+        const listElement = document.getElementById('post-list');
+        const spinner = document.getElementById('loading-spinner');
+        
+        try {
+            // 1. Get list of files in /posts/ folder
+            const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_DIR}`);
+            const files = await response.json();
+            
+            // 2. Filter for only .md files
+            const mdFiles = files.filter(file => file.name.endsWith('.md'));
 
-## The Setup
-First, ensure your directory looks like this:
-
-<div class="file-tree">
-Project/ <br>
-├── Plugin.cs <br>
-├── Patch.cs <br>
-└── MyMod.csproj
-</div>
-
-## The Code
-Here is a basic prefix patch that changes a player's movement speed:
-
-\`\`\`csharp
-[HarmonyPatch(typeof(PlayerController), "GetMoveSpeed")]
-class MovementPatch {
-    static void Postfix(ref float __result) {
-        __result *= 2.0f;
-    }
-}
-\`\`\`
-
-## Why Postfix?
-By using a Postfix, we let the original code run first, then we modify the result before the game uses it.
-            `
-        },
-        {
-            slug: 'asset-extraction-guide',
-            title: 'Extracting Game Assets',
-            date: 'Oct 20, 2023',
-            excerpt: 'A deep dive into AssetStudio and UABE for texture replacement.',
-            content: `
-# Extracting Game Assets
-
-To modify textures, you need to reach into the \`.assets\` files.
-
-## Recommended Tools
-1. **AssetStudio**: Best for viewing models.
-2. **UABE**: Best for replacing files.
-
-> **Warning:** Always backup your 'Managed' folder before attempting to overwrite game assets!
-            `
-        }
-    ];
-
-    function init() {
-        const list = document.getElementById('post-list');
-        posts.forEach(post => {
-            const card = document.createElement('div');
-            card.className = 'post-card';
-            card.onclick = () => loadPost(post.slug);
-            card.innerHTML = \`
-                <span class="post-meta">\${post.date}</span>
-                <h2>\${post.title}</h2>
-                <p>\${post.excerpt}</p>
-            \`;
-            list.appendChild(card);
-        });
-
-        if(window.location.hash) {
-            const slug = window.location.hash.replace('#', '');
-            loadPost(slug);
+            for (let file of mdFiles) {
+                // 3. Fetch the content of each file to get metadata (Title/Date)
+                const rawResponse = await fetch(file.download_url);
+                const text = await rawResponse.text();
+                const metadata = parseMetadata(text);
+                
+                // 4. Create the post card
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                card.onclick = () => loadPost(file.download_url, file.name);
+                card.innerHTML = `
+                    <span class="post-meta">${metadata.date || 'Recent'}</span>
+                    <h2>${metadata.title || file.name}</h2>
+                    <p>${metadata.excerpt || 'Click to read more...'}</p>
+                `;
+                listElement.appendChild(card);
+            }
+            spinner.style.display = 'none';
+        } catch (error) {
+            spinner.innerText = "Error loading posts. Check GitHub config.";
+            console.error(error);
         }
     }
 
-    function loadPost(slug) {
-        const post = posts.find(p => p.slug === slug);
-        if(!post) return;
+    function parseMetadata(text) {
+        const meta = {};
+        const match = text.match(/^---([\s\S]*?)---/);
+        if (match) {
+            const lines = match[1].split('\n');
+            lines.forEach(line => {
+                const [key, ...value] = line.split(':');
+                if (key && value) meta[key.trim()] = value.join(':').trim();
+            });
+        }
+        return meta;
+    }
 
+    async function loadPost(url, filename) {
         document.getElementById('feed').style.display = 'none';
         document.getElementById('reader').style.display = 'block';
+        document.getElementById('post-content').innerHTML = "Loading content...";
+
+        const response = await fetch(url);
+        let text = await response.text();
         
-        document.getElementById('post-content').innerHTML = marked.parse(post.content);
-        
+        // Remove the metadata (Frontmatter) from the display
+        text = text.replace(/^---[\s\S]*?---/, '');
+
+        document.getElementById('post-content').innerHTML = marked.parse(text);
         Prism.highlightAll();
         
-        window.location.hash = slug;
+        window.location.hash = filename;
         window.scrollTo(0,0);
     }
 
@@ -246,7 +227,15 @@ To modify textures, you need to reach into the \`.assets\` files.
         window.location.hash = '';
     }
 
-    init();
+    // Initialize
+    fetchPosts();
+    
+    // Handle direct links
+    if(window.location.hash) {
+        const hash = window.location.hash.replace('#', '');
+        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_DIR}/${hash}`;
+        loadPost(rawUrl, hash);
+    }
 </script>
 </body>
 </html>
