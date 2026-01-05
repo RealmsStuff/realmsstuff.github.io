@@ -1,14 +1,6 @@
 {
-  "v1.0.5/Assembly-CSharp.dll": { 
-    "title": "Assembly (v1.0.5b)", 
-    "excerpt": "Original core assembly for the legacy build." 
-  },
-  "v1.1.0/Assembly-CSharp.dll": { 
-    "title": "Assembly (v1.1.0)", 
-    "excerpt": "Latest patched core assembly with expanded API support." 
-  },
-  "mod-configs/settings.json": {
-    "title": "Ultra Graphics Config",
-    "excerpt": "Pre-configured settings for high-end PCs."
+  "vanilla/Assembly-CSharp.dll": { 
+    "title": "Vanilla Assembly", 
+    "excerpt": "Original core assembly for Captivity." 
   }
 }
