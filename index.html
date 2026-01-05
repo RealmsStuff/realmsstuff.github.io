@@ -20,6 +20,9 @@
             --accent-glow: rgba(167, 139, 250, 0.2);
             --code-bg: #011627;
             --border: #2d2d39;
+            /* Pinned Styles */
+            --pinned-gold: #f1c40f;
+            --pinned-glow: rgba(241, 196, 15, 0.15);
         }
 
         * { box-sizing: border-box; }
@@ -50,15 +53,36 @@
         .tab-btn.active { color: var(--accent); background: var(--accent-glow); }
 
         .post-grid { display: grid; gap: 15px; }
+        
+        /* Base Post Card */
         .post-card {
             background: var(--bg-card); border: 1px solid var(--border); padding: 20px;
             border-radius: 16px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; align-items: center; gap: 20px;
+            position: relative; overflow: hidden;
         }
         .post-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent-glow); }
+
+        /* Pinned Card Variant */
+        .post-card.pinned {
+            border-color: var(--pinned-gold);
+            background: linear-gradient(90deg, rgba(241, 196, 15, 0.03) 0%, var(--bg-card) 100%);
+        }
+        .post-card.pinned:hover {
+            box-shadow: 0 10px 30px -10px var(--pinned-glow);
+        }
+        .post-card.pinned .file-icon {
+            color: var(--pinned-gold);
+            background: rgba(241, 196, 15, 0.1);
+        }
+        .post-card.pinned .post-meta {
+            color: var(--pinned-gold);
+        }
+
         .file-icon {
             font-size: 1.5rem; color: var(--accent); background: rgba(167, 139, 250, 0.1);
             width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px;
+            transition: 0.3s;
         }
         .post-info { flex-grow: 1; }
         .post-meta { font-size: 0.7rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
@@ -131,7 +155,7 @@
     const GITHUB_USER = 'RealmsStuff'; 
     const GITHUB_REPO = 'realmsstuff.github.io'; 
     const POSTS_DIR = 'posts';
-    const ALIAS_FILE = 'aliases.json'; // Name of your external JSON file
+    const ALIAS_FILE = 'aliases.json';
 
     const FILE_TYPES = {
         md:     { icon: 'fa-file-lines', label: 'Post', isText: true },
@@ -142,7 +166,7 @@
     };
 
     let allFiles = [];
-    let fileAliases = {}; // Loaded dynamically
+    let fileAliases = {}; 
     let currentTab = 'guides';
 
     // --- MARKDOWN RENDERER ---
@@ -160,13 +184,12 @@
 
     async function initialize() {
         try {
-            // 1. Fetch the external Aliases JSON
-            const aliasRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${ALIAS_FILE}`);
+            const aliasRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${ALIAS_FILE}?t=${Date.now()}`);
+
             if (aliasRes.ok) {
                 fileAliases = await aliasRes.json();
             }
 
-            // 2. Fetch the recursive file tree
             const treeRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/main?recursive=1`);
             const data = await treeRes.json();
             
@@ -202,25 +225,30 @@
         listElement.innerHTML = '';
         spinner.style.display = 'block';
 
-        const filtered = allFiles.filter(file => {
+        // 1. Filter items by Tab
+        let filtered = allFiles.filter(file => {
             const ext = file.name.split('.').pop().toLowerCase();
             if (currentTab === 'guides') return ext === 'md';
             return ext !== 'md' && FILE_TYPES[ext];
         });
 
+        // 2. Sort Logic: Pinned items first
+        filtered.sort((a, b) => {
+            const aPinned = fileAliases[a.relativePath]?.pinned ? 1 : 0;
+            const bPinned = fileAliases[b.relativePath]?.pinned ? 1 : 0;
+            return bPinned - aPinned; // 1 comes before 0
+        });
+
         for (let file of filtered) {
             const ext = file.name.split('.').pop().toLowerCase();
             const type = FILE_TYPES[ext];
+            const alias = fileAliases[file.relativePath] || {};
+            const isPinned = alias.pinned === true;
             
-            let title = file.name;
-            let excerpt = `Format: .${ext} file`;
+            let title = alias.title || file.name;
+            let excerpt = alias.excerpt || `Format: .${ext} file`;
 
-            // Use Aliases from the fetched JSON
-            if (fileAliases[file.relativePath]) {
-                title = fileAliases[file.relativePath].title;
-                excerpt = fileAliases[file.relativePath].excerpt;
-            } 
-            else if (ext === 'md') {
+            if (!alias.title && ext === 'md') {
                 try {
                     const raw = await fetch(file.download_url);
                     const text = await raw.text();
@@ -231,12 +259,14 @@
             }
 
             const card = document.createElement('div');
-            card.className = 'post-card';
+            card.className = `post-card ${isPinned ? 'pinned' : ''}`;
             card.onclick = () => loadPost(file.download_url, file.name, ext, file.relativePath);
+            
             card.innerHTML = `
-                <div class="file-icon"><i class="fa-solid ${type.icon}"></i></div>
+                <div class="file-icon"><i class="fa-solid ${isPinned ? 'fa-thumbtack' : type.icon}"></i></div>
                 <div class="post-info">
                     <span class="post-meta">
+                        ${isPinned ? '<i class="fa-solid fa-thumbtack"></i> PINNED • ' : ''}
                         ${type.label} 
                         ${file.folder ? `<span class="path-badge">${file.folder}</span>` : ''}
                     </span>
