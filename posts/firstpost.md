@@ -6,6 +6,6 @@ This is my website, pretty simple. As of writing, there isn't much here, but I w
   
 - [x] Make a first post
   
-- [ ] Add knowledgebase
+- [x] Add knowledgebase
   
 - [x] Add guides
