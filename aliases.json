@@ -2,5 +2,17 @@
   "vanilla/Assembly-CSharp.dll": { 
     "title": "Vanilla Assembly", 
     "excerpt": "Original core assembly for Captivity." 
+  },
+  "firstpost.md": { 
+    "title": "Hello!", 
+    "excerpt": "An introduction to my website." 
+  },
+  "guide.md": { 
+    "title": "Captivity Guide", 
+    "excerpt": "The definitive guide to installing mods without breaking your game." 
+  },
+  "vanilla.md": { 
+    "title": "Vanilla Captivity", 
+    "excerpt": "The original game assembly." 
   }
 }
