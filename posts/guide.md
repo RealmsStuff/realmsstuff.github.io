@@ -53,8 +53,8 @@ Drag your **modded** file into this location:
 
 **Step 1: Prerequisites**
 You need the mod loader framework.
-
-1. Download [BepInEx 5.x (x64)](https://github.com/BepInEx/BepInEx/releases).
+[BepInEx 5.x (x64)](https://github.com/BepInEx/BepInEx/releases)
+1. Download BepInEx above.
 2. Extract the zip into your main game folder (where `Captivity.exe` is).
 3. **Run the game once** to create the necessary folders, then close it.
 
