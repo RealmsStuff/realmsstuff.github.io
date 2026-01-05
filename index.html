@@ -22,7 +22,9 @@
             --border: #2d2d39;
             /* Pinned Styles */
             --pinned-gold: #f1c40f;
-            --pinned-glow: rgba(241, 196, 15, 0.15);
+            --pinned-glow: rgba(241, 196, 15, 0.3);
+            --pinned-bg-dark: #0a0902; /* Deep Onyx Gold base */
+            --pinned-card-bg: #141208; /* Dark gold-tinted card */
         }
 
         * { box-sizing: border-box; }
@@ -32,16 +34,39 @@
             color: var(--text-main);
             margin: 0;
             line-height: 1.6;
-            background-image: radial-gradient(circle at 0% 0%, #1a1a2e 0%, transparent 40%), radial-gradient(circle at 100% 100%, #161021 0%, transparent 40%);
+            background-image: 
+                radial-gradient(circle at 0% 0%, #1a1a2e 0%, transparent 40%), 
+                radial-gradient(circle at 100% 100%, #161021 0%, transparent 40%);
             background-attachment: fixed;
             min-height: 100vh;
+            transition: background-color 0.8s ease, background-image 0.8s ease;
+        }
+
+        /* --- FULL PINNED STATE --- */
+        body.pinned-active {
+            background-color: var(--pinned-bg-dark) !important;
+            background-image: 
+                radial-gradient(circle at 0% 0%, #2e2602 0%, transparent 60%), 
+                radial-gradient(circle at 100% 100%, #1c1701 0%, transparent 60%) !important;
+        }
+
+        /* Pinned Reader code blocks */
+        body.pinned-active pre, body.pinned-active code[class*="language-"] {
+            background: #1a1608 !important;
+            border: 1px solid #332b02;
+        }
+
+        /* Logo // goes gold */
+        body.pinned-active .logo span {
+            color: var(--pinned-gold) !important;
+            text-shadow: 0 0 15px var(--pinned-glow);
         }
 
         .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
 
         nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; cursor: pointer; }
-        .logo span { color: var(--accent); }
+        .logo span { color: var(--accent); transition: 0.5s; }
         .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 20px; font-size: 0.9rem; transition: 0.2s; }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
@@ -54,7 +79,6 @@
 
         .post-grid { display: grid; gap: 15px; }
         
-        /* Base Post Card */
         .post-card {
             background: var(--bg-card); border: 1px solid var(--border); padding: 20px;
             border-radius: 16px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -63,13 +87,14 @@
         }
         .post-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 30px -10px var(--accent-glow); }
 
-        /* Pinned Card Variant */
+        /* Pinned Card Variant - No Purple */
         .post-card.pinned {
             border-color: var(--pinned-gold);
-            background: linear-gradient(90deg, rgba(241, 196, 15, 0.03) 0%, var(--bg-card) 100%);
+            background: var(--pinned-card-bg);
         }
         .post-card.pinned:hover {
             box-shadow: 0 10px 30px -10px var(--pinned-glow);
+            background: #1c190a;
         }
         .post-card.pinned .file-icon {
             color: var(--pinned-gold);
@@ -91,6 +116,24 @@
         .post-card p { color: var(--text-muted); margin: 0; font-size: 0.85rem; }
 
         #reader { display: none; animation: fadeIn 0.4s ease; }
+        
+        /* Reader Pinned Active Logic */
+        body.pinned-active #reader .back-btn:hover { background: var(--pinned-gold); }
+        body.pinned-active #reader .download-box { 
+            border-color: var(--pinned-gold); 
+            background: var(--pinned-card-bg);
+            box-shadow: 0 0 50px -10px var(--pinned-glow); 
+        }
+
+        body.pinned-active #reader .download-box > i { color: var(--pinned-gold) !important; }
+        body.pinned-active #reader .download-btn { background: var(--pinned-gold) !important; color: #000 !important; }
+        body.pinned-active #reader .download-btn i { color: #000 !important; }
+
+        body.pinned-active #reader .pinned-banner { 
+            display: flex; align-items: center; gap: 8px; color: var(--pinned-gold); 
+            font-weight: 800; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 15px; 
+        }
+
         .back-btn {
             background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main);
             padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 30px;
@@ -99,21 +142,12 @@
         }
         .back-btn:hover { background: var(--accent); color: #000; }
 
-        .embedded-download {
-            display: inline-flex; align-items: center; gap: 12px;
-            background: linear-gradient(135deg, #2d2d39, #1a1a24); border: 1px solid var(--border);
-            padding: 12px 20px; border-radius: 10px; color: var(--text-main) !important;
-            text-decoration: none !important; font-weight: 600; margin: 15px 0;
-            transition: 0.2s; border-left: 4px solid var(--accent);
-        }
-        .embedded-download:hover { background: var(--accent); color: #000 !important; }
-
-        .download-box { text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 24px; }
+        .download-box { text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 24px; transition: 0.4s; }
         footer { text-align: center; margin-top: 80px; padding: 40px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body id="main-body">
 
 <div class="container">
     <nav>
@@ -151,7 +185,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
 <script>
-    /* --- CONFIGURATION --- */
     const GITHUB_USER = 'RealmsStuff'; 
     const GITHUB_REPO = 'realmsstuff.github.io'; 
     const POSTS_DIR = 'posts';
@@ -169,32 +202,15 @@
     let fileAliases = {}; 
     let currentTab = 'guides';
 
-    // --- MARKDOWN RENDERER ---
-    const renderer = new marked.Renderer();
-    renderer.link = (href, title, text) => {
-        const ext = href.split('.').pop().toLowerCase();
-        const type = FILE_TYPES[ext];
-        if (type && !type.isText) {
-            const downloadUrl = href.startsWith('http') ? href : `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${POSTS_DIR}/${href}`;
-            return `<a href="${downloadUrl}" class="embedded-download" target="_blank"><i class="fa-solid ${type.icon}"></i> <span>Download: <b>${text}</b></span></a>`;
-        }
-        return `<a href="${href}" target="_blank">${text}</a>`;
-    };
-    marked.setOptions({ renderer: renderer });
-
     async function initialize() {
         try {
             const aliasRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${ALIAS_FILE}?t=${Date.now()}`);
-
-            if (aliasRes.ok) {
-                fileAliases = await aliasRes.json();
-            }
+            if (aliasRes.ok) fileAliases = await aliasRes.json();
 
             const treeRes = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/git/trees/main?recursive=1`);
             const data = await treeRes.json();
             
             allFiles = data.tree.filter(item => item.path.startsWith(POSTS_DIR + '/') && item.type === 'blob');
-            
             allFiles = allFiles.map(file => {
                 const relativePath = file.path.replace(POSTS_DIR + '/', '');
                 return {
@@ -205,11 +221,8 @@
                     download_url: `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${file.path}`
                 };
             });
-
             renderContent();
-        } catch (e) { 
-            document.getElementById('loading-spinner').innerHTML = "Error initializing Hub."; 
-        }
+        } catch (e) { document.getElementById('loading-spinner').innerHTML = "Error initializing Hub."; }
     }
 
     function switchTab(tab) {
@@ -222,21 +235,18 @@
     async function renderContent() {
         const listElement = document.getElementById('post-list');
         const spinner = document.getElementById('loading-spinner');
-        listElement.innerHTML = '';
-        spinner.style.display = 'block';
+        listElement.innerHTML = ''; spinner.style.display = 'block';
 
-        // 1. Filter items by Tab
         let filtered = allFiles.filter(file => {
             const ext = file.name.split('.').pop().toLowerCase();
             if (currentTab === 'guides') return ext === 'md';
             return ext !== 'md' && FILE_TYPES[ext];
         });
 
-        // 2. Sort Logic: Pinned items first
         filtered.sort((a, b) => {
             const aPinned = fileAliases[a.relativePath]?.pinned ? 1 : 0;
             const bPinned = fileAliases[b.relativePath]?.pinned ? 1 : 0;
-            return bPinned - aPinned; // 1 comes before 0
+            return bPinned - aPinned; 
         });
 
         for (let file of filtered) {
@@ -244,31 +254,18 @@
             const type = FILE_TYPES[ext];
             const alias = fileAliases[file.relativePath] || {};
             const isPinned = alias.pinned === true;
-            
             let title = alias.title || file.name;
             let excerpt = alias.excerpt || `Format: .${ext} file`;
-
-            if (!alias.title && ext === 'md') {
-                try {
-                    const raw = await fetch(file.download_url);
-                    const text = await raw.text();
-                    const meta = parseMetadata(text);
-                    if (meta.title) title = meta.title;
-                    if (meta.excerpt) excerpt = meta.excerpt;
-                } catch(e) {}
-            }
 
             const card = document.createElement('div');
             card.className = `post-card ${isPinned ? 'pinned' : ''}`;
             card.onclick = () => loadPost(file.download_url, file.name, ext, file.relativePath);
-            
             card.innerHTML = `
                 <div class="file-icon"><i class="fa-solid ${isPinned ? 'fa-thumbtack' : type.icon}"></i></div>
                 <div class="post-info">
                     <span class="post-meta">
                         ${isPinned ? '<i class="fa-solid fa-thumbtack"></i> PINNED • ' : ''}
-                        ${type.label} 
-                        ${file.folder ? `<span class="path-badge">${file.folder}</span>` : ''}
+                        ${type.label} ${file.folder ? `<span class="path-badge">${file.folder}</span>` : ''}
                     </span>
                     <h2>${title}</h2>
                     <p>${excerpt}</p>
@@ -278,42 +275,41 @@
         spinner.style.display = 'none';
     }
 
-    function parseMetadata(text) {
-        const meta = {};
-        const match = text.match(/^---([\s\S]*?)---/);
-        if (match) {
-            match[1].split('\n').forEach(line => {
-                const [key, ...value] = line.split(':');
-                if (key && value.length) meta[key.trim()] = value.join(':').trim();
-            });
-        }
-        return meta;
-    }
-
     async function loadPost(url, filename, ext, relativePath) {
-        document.getElementById('feed').style.display = 'none';
-        document.getElementById('reader').style.display = 'block';
         const contentArea = document.getElementById('post-content');
         const type = FILE_TYPES[ext];
+        const alias = fileAliases[relativePath] || {};
+        const isPinned = alias.pinned === true;
+
+        document.getElementById('feed').style.display = 'none';
+        document.getElementById('reader').style.display = 'block';
+
+        if (isPinned) {
+            document.body.classList.add('pinned-active');
+        } else {
+            document.body.classList.remove('pinned-active');
+        }
+
+        const pinnedBanner = isPinned ? `<div class="pinned-banner"><i class="fa-solid fa-thumbtack"></i> Pinned Entry</div>` : '';
 
         if (type.isText) {
             const response = await fetch(url);
             let text = await response.text();
             if (ext === 'md') {
                 text = text.replace(/^---[\s\S]*?---/, '');
-                contentArea.innerHTML = marked.parse(text);
+                contentArea.innerHTML = pinnedBanner + marked.parse(text);
             } else {
-                contentArea.innerHTML = `<h1>${filename}</h1><pre><code>${text}</code></pre>`;
+                contentArea.innerHTML = pinnedBanner + `<h1>${filename}</h1><pre><code>${text}</code></pre>`;
             }
             Prism.highlightAll();
         } else {
-            const displayTitle = fileAliases[relativePath] ? fileAliases[relativePath].title : filename;
+            const displayTitle = alias.title || filename;
             contentArea.innerHTML = `
                 <div class="download-box">
                     <i class="fa-solid ${type.icon}" style="font-size: 5rem; color: var(--accent); margin-bottom: 20px;"></i>
                     <h1>${displayTitle}</h1>
                     <p style="color:var(--text-muted)">Location: <code>${relativePath}</code></p>
-                    <a href="${url}" class="back-btn" style="background: var(--accent); color: #000; text-decoration: none;">
+                    <a href="${url}" class="back-btn download-btn" style="background: var(--accent); color: #000; text-decoration: none;">
                         <i class="fa-solid fa-download"></i> Download File
                     </a>
                 </div>`;
@@ -324,6 +320,7 @@
     function showFeed() {
         document.getElementById('feed').style.display = 'block';
         document.getElementById('reader').style.display = 'none';
+        document.body.classList.remove('pinned-active');
         window.scrollTo(0,0);
     }
 
