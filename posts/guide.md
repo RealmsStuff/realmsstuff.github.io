@@ -1,6 +1,6 @@
 ---
 
-title: Captivity Guide!
+title: Captivity Guide
 date: Jan 5, 2026
 excerpt: The definitive guide to installing mods without breaking your game.
 
