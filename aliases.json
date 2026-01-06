@@ -6,7 +6,8 @@
   },
   "firstpost.md": { 
     "title": "Hello!", 
-    "excerpt": "An introduction to my website." 
+    "excerpt": "An introduction to my website.",
+    "color": "#ff0000"
   },
   "guide.md": { 
     "title": "Captivity Guide", 
