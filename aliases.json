@@ -15,7 +15,8 @@
   },
   "vanilla.md": { 
     "title": "Vanilla Captivity", 
-    "excerpt": "The original game assembly." 
+    "excerpt": "The original game assembly.",
+    "color": "#00d4ff"
   },
   "bepinex/XGame_Modding.dll": {
     "title": "Modding API",
