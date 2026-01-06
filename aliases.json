@@ -2,7 +2,7 @@
   "vanilla/Assembly-CSharp.dll": { 
     "title": "Vanilla Assembly", 
     "excerpt": "Original core assembly for Captivity.",
-    "pinned": true
+    "color": "#00d4ff"
   },
   "firstpost.md": { 
     "title": "Hello!", 
