@@ -4,6 +4,11 @@
     "excerpt": "Original core assembly for Captivity.",
     "pinned": true
   },
+  "texture_replacement_guide.md": {
+    "title": "Texture Mod Making",
+    "excerpt": "The guide by user @mmm_mmmmmm_mm on making texture mods",
+    "pinned": true
+  },
   "firstpost.md": { 
     "title": "Hello!", 
     "excerpt": "An introduction to my website.",
